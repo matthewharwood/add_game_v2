@@ -1,4 +1,5 @@
 import '../js/components/card-container-component';
+import '../js/components/card-slot-component';
 
 export default {
   title: 'Components/CardContainer',
@@ -7,3 +8,15 @@ export default {
 };
 
 export const Default = {};
+
+export const WithCardSlots = {
+  render: () => `
+    <card-container-component>
+      <card-slot-component></card-slot-component>
+      <card-slot-component></card-slot-component>
+      <card-slot-component></card-slot-component>
+      <card-slot-component></card-slot-component>
+      <card-slot-component></card-slot-component>
+    </card-container-component>
+  `,
+};

@@ -24,6 +24,11 @@ export class CardContainerComponent extends HTMLElement {
         .inner {
           background: #ccc;
           min-height: 100px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem;
         }
       </style>
       <div class="container">
