@@ -11,3 +11,7 @@ export const Default = {};
 export const WithNumber = {
   render: () => '<card-component>7</card-component>',
 };
+
+export const Disabled = {
+  render: () => '<card-component disabled>3</card-component>',
+};

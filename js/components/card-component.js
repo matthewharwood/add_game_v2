@@ -1,4 +1,8 @@
 export class CardComponent extends HTMLElement {
+  static get observedAttributes() {
+    return ['disabled'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -8,7 +12,15 @@ export class CardComponent extends HTMLElement {
     this.render();
   }
 
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'disabled') {
+      this.render();
+    }
+  }
+
   render() {
+    const isDisabled = this.hasAttribute('disabled');
+    
     this.shadowRoot.innerHTML = `
       <style>
         :host {
@@ -28,8 +40,16 @@ export class CardComponent extends HTMLElement {
           font-size: 24px;
           font-weight: bold;
         }
+        
+        .card.disabled {
+          border-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .card.disabled ::slotted(*) {
+          opacity: 0.5;
+        }
       </style>
-      <div class="card">
+      <div class="card ${isDisabled ? 'disabled' : ''}">
         <slot></slot>
       </div>
     `;
