@@ -1,4 +1,4 @@
-export class CardComponent extends HTMLElement {
+export class CardSlotComponent extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -15,25 +15,22 @@ export class CardComponent extends HTMLElement {
           display: inline-block;
         }
         
-        .card {
+        .card-slot {
           width: 150px;
           height: 210px;
-          background: white;
-          border: 1px solid black;
+          border: 2px dashed black;
           border-radius: 8px;
           box-sizing: border-box;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 24px;
-          font-weight: bold;
         }
       </style>
-      <div class="card">
+      <div class="card-slot">
         <slot></slot>
       </div>
     `;
   }
 }
 
-customElements.define('card-component', CardComponent);
+customElements.define('card-slot-component', CardSlotComponent);

@@ -7,3 +7,7 @@ export default {
 };
 
 export const Default = {};
+
+export const WithNumber = {
+  render: () => '<card-component>7</card-component>',
+};
