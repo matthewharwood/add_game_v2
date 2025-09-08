@@ -35,3 +35,25 @@ export const WithCardSlotAndCard = {
     </card-container-component>
   `,
 };
+
+export const WithCardSlotAndDraggableCards = {
+  render: () => `
+    <card-container-component>
+      <card-slot-component>
+        <card-component>1</card-component>
+      </card-slot-component>
+      <card-slot-component>
+        <card-component>2</card-component>
+      </card-slot-component>
+      <card-slot-component>
+        <card-component>3</card-component>
+      </card-slot-component>
+      <card-slot-component>
+        <card-component>4</card-component>
+      </card-slot-component>
+      <card-slot-component>
+        <card-component>5</card-component>
+      </card-slot-component>
+    </card-container-component>
+  `,
+};
