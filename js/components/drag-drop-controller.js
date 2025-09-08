@@ -71,7 +71,10 @@ export class DragDropController {
     this.draggedClone.style.left = (e.clientX - this.dragOffset.x) + 'px';
     this.draggedClone.style.top = (e.clientY - this.dragOffset.y) + 'px';
     this.draggedClone.style.pointerEvents = 'none';
-    this.draggedClone.style.opacity = '0.8';
+    this.draggedClone.style.opacity = '0.9';
+    this.draggedClone.style.transform = 'scale(1.2) rotate(10deg)';
+    this.draggedClone.style.transformOrigin = 'center';
+    this.draggedClone.style.transition = 'transform 0.2s ease';
     this.draggedClone.classList.add(this.options.dragClass);
     document.body.appendChild(this.draggedClone);
     
@@ -122,14 +125,30 @@ export class DragDropController {
     
     const dropZone = this.currentDropZone;
     
+    // Immediately handle the drop (no delay)
     if (dropZone && dropZone !== this.originalParent) {
-      // Handle the drop
       this.handleDrop(this.draggedElement, dropZone);
     } else {
       // Return to original position
       this.draggedElement.style.opacity = '';
     }
     
+    // Animate clone fadeout in parallel (non-blocking)
+    if (this.draggedClone) {
+      const clone = this.draggedClone; // Store reference for async cleanup
+      clone.style.transform = 'scale(0.8) rotate(0deg)';
+      clone.style.opacity = '0';
+      
+      // Clean up clone after animation completes
+      setTimeout(() => {
+        if (clone && clone.parentNode) {
+          clone.remove();
+        }
+      }, 200);
+    }
+    
+    // Clean up immediately (except clone which animates out)
+    this.draggedClone = null; // Clear reference immediately
     this.cleanup();
     this.emit('dragend', { element: this.draggedElement, dropZone });
   }
@@ -139,13 +158,28 @@ export class DragDropController {
     const existingElement = dropZone.querySelector(this.options.draggableSelector);
     
     if (existingElement && this.originalParent) {
-      // Swap elements
+      // Swap elements with a quick transition
+      existingElement.style.transition = 'transform 0.15s ease';
+      existingElement.style.transform = 'scale(0.95)';
       this.originalParent.appendChild(existingElement);
+      
+      setTimeout(() => {
+        existingElement.style.transform = '';
+        existingElement.style.transition = '';
+      }, 150);
     }
     
-    // Move element to new drop zone
+    // Move element to new drop zone with quick landing animation
+    element.style.transition = 'all 0.15s ease';
+    element.style.transform = 'scale(1.05)';
     dropZone.appendChild(element);
     element.style.opacity = '';
+    
+    // Settle into final position quickly
+    setTimeout(() => {
+      element.style.transform = '';
+      element.style.transition = '';
+    }, 150);
     
     this.emit('drop', { element, dropZone, swapped: existingElement });
   }
@@ -177,8 +211,8 @@ export class DragDropController {
   }
   
   cleanup() {
-    // Remove clone
-    if (this.draggedClone) {
+    // Remove clone only if it hasn't been handled already
+    if (this.draggedClone && this.draggedClone.parentNode) {
       this.draggedClone.remove();
       this.draggedClone = null;
     }
