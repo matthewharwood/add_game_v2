@@ -1,8 +1,8 @@
+/**
+ * Simple Card Slot Component - a clean drop zone
+ * Focused, readable, reusable
+ */
 export class CardSlotComponent extends HTMLElement {
-  static get observedAttributes() {
-    return ['drop-ready', 'hover', 'occupied'];
-  }
-
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -10,92 +10,68 @@ export class CardSlotComponent extends HTMLElement {
 
   connectedCallback() {
     this.render();
-    this.updateOccupiedState();
+    this.setAttribute('data-drop-zone', 'true');
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (['drop-ready', 'hover', 'occupied'].includes(name)) {
-      this.render();
-    }
+  get isEmpty() {
+    return !this.querySelector('card-component');
   }
 
-  updateOccupiedState() {
-    const hasCard = this.querySelector('card-component');
-    if (hasCard) {
-      this.setAttribute('occupied', '');
-    } else {
-      this.removeAttribute('occupied');
-    }
-  }
-
-  hasCard() {
-    return this.querySelector('card-component') !== null;
-  }
-
-  getCard() {
+  get card() {
     return this.querySelector('card-component');
   }
 
-  acceptCard(card) {
-    // Remove card from its current parent if it has one
-    if (card.parentElement && card.parentElement !== this) {
-      card.parentElement.removeChild(card);
-    }
-    this.appendChild(card);
-    this.setAttribute('occupied', '');
+  accept(element) {
+    // Clear any existing content
+    this.clear();
+    // Add the new element
+    this.appendChild(element);
   }
 
-  removeCard() {
-    const card = this.getCard();
-    if (card) {
-      this.removeChild(card);
-      this.removeAttribute('occupied');
+  clear() {
+    const existingCard = this.card;
+    if (existingCard) {
+      existingCard.remove();
     }
-    return card;
   }
 
   render() {
-    const isDropReady = this.hasAttribute('drop-ready');
-    const isHover = this.hasAttribute('hover');
-    const isOccupied = this.hasAttribute('occupied');
-    
     this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: inline-block;
-          position: relative;
         }
         
-        .card-slot {
+        .slot {
           width: 150px;
           height: 210px;
-          border: 2px dashed black;
+          border: 2px dashed #999;
           border-radius: 8px;
           box-sizing: border-box;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: all 0.3s ease;
+          background: rgba(255, 255, 255, 0.5);
         }
         
-        .card-slot.drop-ready {
+        :host(.drag-over) .slot {
           border-color: #4CAF50;
-          background: rgba(76, 175, 80, 0.05);
-        }
-        
-        .card-slot.hover {
-          border-color: #2196F3;
-          border-width: 3px;
-          background: rgba(33, 150, 243, 0.1);
+          background: rgba(76, 175, 80, 0.1);
           transform: scale(1.02);
         }
         
-        .card-slot.occupied.hover {
+        :host(:has(card-component)) .slot {
+          border-style: solid;
+          border-color: #666;
+        }
+        
+        :host(.drag-over:has(card-component)) .slot {
           border-color: #FF9800;
           background: rgba(255, 152, 0, 0.1);
         }
       </style>
-      <div class="card-slot ${isDropReady ? 'drop-ready' : ''} ${isHover ? 'hover' : ''} ${isOccupied ? 'occupied' : ''}">
+      <div class="slot">
         <slot></slot>
       </div>
     `;

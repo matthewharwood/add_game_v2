@@ -1,80 +1,61 @@
+/**
+ * Simple Card Component - focused only on display
+ * Clean, readable, single responsibility
+ */
 export class CardComponent extends HTMLElement {
   static get observedAttributes() {
-    return ['disabled', 'dragging'];
+    return ['disabled', 'value'];
   }
 
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.isDraggable = true;
   }
 
   connectedCallback() {
     this.render();
-    this.setupEventListeners();
-  }
-
-  disconnectedCallback() {
-    this.removeEventListeners();
+    this.setAttribute('draggable', 'true');
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'disabled' || name === 'dragging') {
-      this.render();
+    this.render();
+  }
+
+  get value() {
+    return this.getAttribute('value') || '';
+  }
+
+  set value(val) {
+    this.setAttribute('value', val);
+  }
+
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val) {
+    if (val) {
+      this.setAttribute('disabled', '');
+      this.setAttribute('data-disabled', 'true');
+    } else {
+      this.removeAttribute('disabled');
+      this.removeAttribute('data-disabled');
     }
-  }
-
-  setupEventListeners() {
-    this.cardElement = this.shadowRoot.querySelector('.card');
-    
-    this.handlePointerDown = this.onPointerDown.bind(this);
-    this.handleClick = this.onClick.bind(this);
-    
-    this.cardElement.addEventListener('pointerdown', this.handlePointerDown);
-    this.cardElement.addEventListener('click', this.handleClick);
-  }
-
-  removeEventListeners() {
-    if (this.cardElement) {
-      this.cardElement.removeEventListener('pointerdown', this.handlePointerDown);
-      this.cardElement.removeEventListener('click', this.handleClick);
-    }
-  }
-
-  onPointerDown(e) {
-    if (this.hasAttribute('disabled')) return;
-    
-    const container = this.closest('card-container-component');
-    if (container && container.startDrag) {
-      e.preventDefault();
-      container.startDrag(this, e);
-    }
-  }
-
-  onClick(e) {
-    if (this.hasAttribute('disabled')) return;
-    
-    // Prevent click animation if we were dragging
-    if (this.hasAttribute('dragging')) return;
-    
-    this.animateClick();
-  }
-
-  animateClick() {
-    this.cardElement.style.animation = 'none';
-    void this.cardElement.offsetHeight; // Trigger reflow
-    this.cardElement.style.animation = 'clickBounce 0.6s ease-out';
   }
 
   render() {
-    const isDisabled = this.hasAttribute('disabled');
-    const isDragging = this.hasAttribute('dragging');
+    const isDisabled = this.disabled;
+    const value = this.value;
     
     this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: inline-block;
-          position: relative;
+          cursor: ${isDisabled ? 'not-allowed' : 'grab'};
+        }
+        
+        :host([draggable="true"]:not([disabled])) {
+          cursor: grab;
         }
         
         .card {
@@ -89,50 +70,29 @@ export class CardComponent extends HTMLElement {
           justify-content: center;
           font-size: 24px;
           font-weight: bold;
-          cursor: ${isDisabled ? 'default' : 'grab'};
-          transition: transform 0.2s, box-shadow 0.2s;
           user-select: none;
-          -webkit-user-select: none;
+          transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        .card:hover:not(.disabled):not(.dragging) {
+        :host(:not([disabled])) .card:hover {
           transform: translateY(-2px);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        .card.dragging {
-          cursor: grabbing;
-          z-index: 1000;
+        :host([disabled]) .card {
+          opacity: 0.5;
+          border-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        :host(.dragging) .card {
           opacity: 0.8;
           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
-        
-        .card.disabled {
-          border-color: rgba(0, 0, 0, 0.5);
-          cursor: not-allowed;
-        }
-        
-        .card.disabled ::slotted(*) {
-          opacity: 0.5;
-        }
-        
-        @keyframes clickBounce {
-          0% { transform: scale(1) rotate(0deg); }
-          20% { transform: scale(1.1) rotate(5deg); }
-          40% { transform: scale(0.95) rotate(-5deg); }
-          60% { transform: scale(1.05) rotate(3deg); }
-          80% { transform: scale(0.98) rotate(-2deg); }
-          100% { transform: scale(1) rotate(0deg); }
-        }
       </style>
-      <div class="card ${isDisabled ? 'disabled' : ''} ${isDragging ? 'dragging' : ''}">
-        <slot></slot>
+      <div class="card">
+        <slot>${value}</slot>
       </div>
     `;
-    
-    if (this.cardElement) {
-      this.setupEventListeners();
-    }
   }
 }
 
