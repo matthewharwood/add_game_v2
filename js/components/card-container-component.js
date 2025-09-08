@@ -1,24 +1,51 @@
 import { DragDropController } from './drag-drop-controller.js';
+import { AudioController } from './audio-controller.js';
 
 /**
  * Simple Card Container - orchestrates drag and drop
  * Clean, focused, easy to understand
  */
 export class CardContainerComponent extends HTMLElement {
+  static get observedAttributes() {
+    return ['click-sound'];
+  }
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.dragController = null;
+    this.audioController = null;
   }
 
   connectedCallback() {
     this.render();
     this.setupDragDrop();
+    this.setupAudio();
   }
 
   disconnectedCallback() {
     if (this.dragController) {
       this.dragController.destroy();
+    }
+    if (this.audioController) {
+      this.audioController.stop();
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'click-sound' && newValue && this.audioController) {
+      this.audioController.load('click', newValue);
+    }
+  }
+
+  setupAudio() {
+    // Initialize audio controller
+    this.audioController = new AudioController();
+    
+    // Load click sound if attribute is set
+    const clickSound = this.getAttribute('click-sound');
+    if (clickSound) {
+      this.audioController.load('click', clickSound);
     }
   }
 
@@ -38,11 +65,22 @@ export class CardContainerComponent extends HTMLElement {
 
   handleCardClick(e) {
     const card = e.detail.element;
+    
+    // Play click sound if configured
+    if (this.audioController && this.getAttribute('click-sound')) {
+      this.audioController.play('click');
+    }
+    
     console.log('Card clicked:', card.value || card.textContent);
   }
 
   handleCardDrop(e) {
     const { element, dropZone, swapped } = e.detail;
+    
+    // Play sound on drop too
+    if (this.audioController && this.getAttribute('click-sound')) {
+      this.audioController.play('click');
+    }
     
     // Log the action for debugging
     if (swapped) {
