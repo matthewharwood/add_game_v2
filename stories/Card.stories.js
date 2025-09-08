@@ -1,0 +1,9 @@
+import '../js/components/card-component';
+
+export default {
+  title: 'Components/Card',
+  component: 'card-component',
+  render: () => '<card-component></card-component>',
+};
+
+export const Default = {};
