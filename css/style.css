@@ -1,2 +1,22 @@
 @import "vars.css";
 @import "normalize.css";
+
+/* Touch-specific styles for drag and drop on iOS/iPad */
+[draggable="true"] {
+  /* Prevent default touch behaviors that interfere with drag */
+  touch-action: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Ensure drop zones also handle touch properly */
+[data-drop-zone] {
+  touch-action: none;
+}
+
+/* Prevent any text selection during drag */
+.dragging {
+  -webkit-user-select: none;
+  user-select: none;
+}

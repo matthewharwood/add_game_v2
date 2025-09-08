@@ -54,6 +54,12 @@ export class DragDropController {
   startDrag(element, e) {
     this.draggedElement = element;
     this.originalParent = element.parentElement;
+    this.pointerId = e.pointerId;
+    
+    // Capture the pointer for consistent drag behavior on touch devices
+    if (e.target.setPointerCapture) {
+      e.target.setPointerCapture(e.pointerId);
+    }
     
     // Get initial position
     const rect = element.getBoundingClientRect();
@@ -122,6 +128,11 @@ export class DragDropController {
   
   handlePointerUp(e) {
     if (!this.draggedElement) return;
+    
+    // Release pointer capture
+    if (e.target.releasePointerCapture && this.pointerId !== undefined) {
+      e.target.releasePointerCapture(this.pointerId);
+    }
     
     const dropZone = this.currentDropZone;
     
@@ -230,6 +241,7 @@ export class DragDropController {
     this.draggedElement = null;
     this.originalParent = null;
     this.currentDropZone = null;
+    this.pointerId = null;
   }
   
   // Simple event emitter

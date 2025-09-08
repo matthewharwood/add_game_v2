@@ -52,10 +52,16 @@ export class CardComponent extends HTMLElement {
         :host {
           display: inline-block;
           cursor: ${isDisabled ? 'not-allowed' : 'grab'};
+          /* Touch-specific properties for iOS/iPad compatibility */
+          touch-action: none;
+          -webkit-user-select: none;
+          -webkit-user-drag: none;
+          user-select: none;
         }
         
         :host([draggable="true"]:not([disabled])) {
           cursor: grab;
+          touch-action: none;
         }
         
         .card {
