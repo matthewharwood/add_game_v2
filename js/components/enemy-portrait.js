@@ -30,7 +30,8 @@ export class EnemyPortrait extends HTMLElement {
       <style>
         :host {
           display: block;
-          width: 200px;
+          width: 100%;
+          max-width: 200px;
         }
         
         :host-context(enemy-container) .portrait-container,
@@ -38,6 +39,8 @@ export class EnemyPortrait extends HTMLElement {
           border: none;
           border-radius: 0;
           box-shadow: none;
+          padding: 0;
+          height: 100%;
         }
         
         .portrait-container {
@@ -50,6 +53,7 @@ export class EnemyPortrait extends HTMLElement {
           display: flex;
           align-items: center;
           justify-content: center;
+          box-sizing: border-box;
         }
         
         .enemy-image {

@@ -33,7 +33,6 @@ export class EnemyInfo extends HTMLElement {
         :host {
           display: block;
           width: 100%;
-          
         }
 
         :host-context(enemy-container) .info-container,
@@ -41,6 +40,8 @@ export class EnemyInfo extends HTMLElement {
           border: none;
           border-radius: 0;
           box-shadow: none;
+          padding: 10px;
+          height: 100%;
         }
 
         .info-container {
@@ -53,6 +54,7 @@ export class EnemyInfo extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          box-sizing: border-box;
         }
 
         .enemy-name {

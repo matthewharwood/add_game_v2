@@ -27,7 +27,7 @@ export class EnemySlot extends HTMLElement {
           border: 2px solid #000;
           border-radius: 8px;
           overflow: hidden;
-          min-height: 200px;
+          height: 204px; /* Fixed height: 180px content + 20px padding + 4px borders */
           width: 100%;
         }
         
@@ -37,6 +37,8 @@ export class EnemySlot extends HTMLElement {
           align-items: center;
           justify-content: center;
           padding: 10px;
+          height: 100%;
+          box-sizing: border-box;
         }
         
         .left-slot {
@@ -49,6 +51,7 @@ export class EnemySlot extends HTMLElement {
           border: none !important;
           border-radius: 0 !important;
           box-shadow: none !important;
+          width: 100%;
         }
         
         /* Handle empty slots */
@@ -56,7 +59,8 @@ export class EnemySlot extends HTMLElement {
         .right-slot:empty::after {
           content: '';
           display: block;
-          width: 180px;
+          width: 100%;
+          max-width: 180px;
           height: 180px;
           background: #f0f0f0;
           border: 1px dashed #ccc;
