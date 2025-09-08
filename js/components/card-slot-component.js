@@ -43,8 +43,9 @@ export class CardSlotComponent extends HTMLElement {
         }
         
         .slot {
-          width: 150px;
-          height: 210px;
+          width: 174px;
+          height: 234px;
+          padding: 12px;
           border: 2px dashed #999;
           border-radius: 8px;
           box-sizing: border-box;
