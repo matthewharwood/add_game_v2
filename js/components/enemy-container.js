@@ -1,6 +1,6 @@
 /**
- * Enemy Container Component - Similar styling to CardContainer but for displaying enemies
- * Accepts a single slot for enemy content
+ * Enemy Container Component - Container for up to 3 EnemySlots
+ * Manages the overall layout and spacing of enemy slots
  */
 export class EnemyContainer extends HTMLElement {
   constructor() {
@@ -10,6 +10,19 @@ export class EnemyContainer extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    this.validateSlotCount();
+  }
+
+  validateSlotCount() {
+    const slots = this.querySelectorAll('enemy-slot');
+    if (slots.length > 3) {
+      console.warn('EnemyContainer: Maximum of 3 enemy-slots allowed. Extra slots will be hidden.');
+      slots.forEach((slot, index) => {
+        if (index >= 3) {
+          slot.style.display = 'none';
+        }
+      });
+    }
   }
 
   render() {
@@ -20,25 +33,48 @@ export class EnemyContainer extends HTMLElement {
         }
         
         .container {
-          border: 1px solid #333;
-          border-radius: 8px;
-          padding: 12px;
+          border: 2px solid #333;
+          border-radius: 12px;
+          padding: 16px;
           background: #f5f5f5;
+          min-height: 250px;
+          width: 100%;
+          box-sizing: border-box;
         }
         
-        .enemy-area {
+        .slots-wrapper {
           display: flex;
+          flex-direction: row;
+          gap: 16px;
           justify-content: center;
+          align-items: stretch;
+        }
+        
+        /* Limit to 3 slots */
+        ::slotted(enemy-slot:nth-of-type(n+4)) {
+          display: none !important;
+        }
+        
+        /* Remove any extra borders from slotted enemy-slots */
+        ::slotted(enemy-slot) {
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Empty state */
+        .container:has(.slots-wrapper:empty) {
+          display: flex;
           align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background: #e0e0e0;
-          border-radius: 4px;
-          min-height: 250px;
+          justify-content: center;
+          color: #999;
+        }
+        
+        .container:has(.slots-wrapper:empty)::after {
+          content: 'Add up to 3 enemy slots';
+          font-style: italic;
         }
       </style>
       <div class="container">
-        <div class="enemy-area">
+        <div class="slots-wrapper">
           <slot></slot>
         </div>
       </div>

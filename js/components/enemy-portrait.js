@@ -24,6 +24,7 @@ export class EnemyPortrait extends HTMLElement {
   render() {
     const imgsrc = this.getAttribute('imgsrc') || '';
     const alt = this.getAttribute('alt') || 'Enemy';
+    const inContainer = this.hasAttribute('no-border');
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -32,17 +33,28 @@ export class EnemyPortrait extends HTMLElement {
           width: 200px;
         }
         
+        :host-context(enemy-container) .portrait-container,
+        :host-context(enemy-slot) .portrait-container {
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+        }
+        
         .portrait-container {
           border: 2px solid #000;
           border-radius: 8px;
           padding: 10px;
           background: #fff;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          height: 180px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         
         .enemy-image {
           width: 100%;
-          height: 180px;
+          height: 100%;
           object-fit: contain;
           display: block;
         }
