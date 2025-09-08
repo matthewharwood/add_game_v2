@@ -41,7 +41,7 @@ export class CardContainerComponent extends HTMLElement {
   setupAudio() {
     // Initialize audio controller
     this.audioController = new AudioController();
-    
+
     // Load click sound if attribute is set
     const clickSound = this.getAttribute('click-sound');
     if (clickSound) {
@@ -65,30 +65,30 @@ export class CardContainerComponent extends HTMLElement {
 
   handleCardClick(e) {
     const card = e.detail.element;
-    
+
     // Play click sound if configured
     if (this.audioController && this.getAttribute('click-sound')) {
       this.audioController.play('click');
     }
-    
+
     console.log('Card clicked:', card.value || card.textContent);
   }
 
   handleCardDrop(e) {
     const { element, dropZone, swapped } = e.detail;
-    
+
     // Play sound on drop too
     if (this.audioController && this.getAttribute('click-sound')) {
       this.audioController.play('click');
     }
-    
+
     // Log the action for debugging
     if (swapped) {
       console.log('Cards swapped');
     } else {
       console.log('Card moved to empty slot');
     }
-    
+
     // Optional: Check win condition, update score, etc.
     this.checkGameState();
   }
@@ -100,7 +100,7 @@ export class CardContainerComponent extends HTMLElement {
       const card = slot.card;
       return card ? (card.value || card.textContent.trim()) : null;
     });
-    
+
     console.log('Current state:', values);
   }
 
@@ -110,21 +110,17 @@ export class CardContainerComponent extends HTMLElement {
         :host {
           display: block;
         }
-        
+
         .container {
-          border: 1px solid #333;
-          border-radius: 8px;
-          padding: 12px;
-          background: #f5f5f5;
+
         }
-        
+
         .slots {
           display: flex;
           justify-content: center;
           align-items: center;
           gap: 1rem;
-          padding: 1rem;
-          background: #e0e0e0;
+
           border-radius: 4px;
           min-height: 250px;
         }

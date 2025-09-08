@@ -31,17 +31,14 @@ export class EnemyContainer extends HTMLElement {
         :host {
           display: block;
         }
-        
+
         .container {
-          border: 2px solid #333;
-          border-radius: 12px;
-          padding: 16px;
-          background: #f5f5f5;
+
           min-height: 250px;
           width: 100%;
           box-sizing: border-box;
         }
-        
+
         .slots-wrapper {
           display: flex;
           flex-direction: row;
@@ -49,17 +46,17 @@ export class EnemyContainer extends HTMLElement {
           justify-content: center;
           align-items: stretch;
         }
-        
+
         /* Limit to 3 slots */
         ::slotted(enemy-slot:nth-of-type(n+4)) {
           display: none !important;
         }
-        
+
         /* Remove any extra borders from slotted enemy-slots */
         ::slotted(enemy-slot) {
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Empty state */
         .container:has(.slots-wrapper:empty) {
           display: flex;
@@ -67,7 +64,7 @@ export class EnemyContainer extends HTMLElement {
           justify-content: center;
           color: #999;
         }
-        
+
         .container:has(.slots-wrapper:empty)::after {
           content: 'Add up to 3 enemy slots';
           font-style: italic;
